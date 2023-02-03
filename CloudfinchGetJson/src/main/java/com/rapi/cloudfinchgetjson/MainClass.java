@@ -71,13 +71,19 @@ public class MainClass {
                 }
           
                 // Printing out the distinct continents with their country details
-                for (Map.Entry<String,List<JSONObject>> entry : ContinentWithCountries.entrySet()) 
-                    System.out.println("Key = " + entry.getKey() +", Value = " + entry.getValue());
+//                for (Map.Entry<String,List<JSONObject>> entry : ContinentWithCountries.entrySet()) 
+//                    System.out.println("Key = " + entry.getKey() +", Value = " + entry.getValue());
+//                System.out.println();
                 
                 // Iterating through each continent in the HashMap.....Sorting the top 5 in decending order
-                for (Map.Entry<String, List<JSONObject>> entry : ContinentWithCountries.entrySet()) {
+                for (Map.Entry<String, List<JSONObject>> entry : ContinentWithCountries.entrySet()) {      
                     List<JSONObject> TopFiveCountries = entry.getValue().stream()
-                      .sorted((i1, i2) -> ((int) i2.get("area") - (int) i1.get("area"))) //  There is a bug in this line ......rest of the code should print properly
+                      .filter(c -> c.get("area")!=null && !c.get("area").getClass().getSimpleName().equals("Double")) // Filtering out null and Double values
+                      .sorted((o1,o2) -> {
+                          Long area1 = (Long) o1.get("area");
+                          Long area2 = (Long) o2.get("area");
+                          return area2.compareTo(area1);
+                      })
                       .limit(5)
                       .collect(Collectors.toList());
                 
@@ -85,6 +91,7 @@ public class MainClass {
                     for (int i = 0; i < TopFiveCountries.size(); i++) {
                         System.out.println((i + 1) + ". " + TopFiveCountries.get(i).get("name") + " , Area = " + TopFiveCountries.get(i).get("area"));
                       }
+                    System.out.println();
                 }
             }  
         }
